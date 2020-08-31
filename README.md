@@ -1,5 +1,8 @@
 # Travian Crop Finder
 
+## Run
+    php crop_finder.php
+
 ## Config
 
 #### Server
@@ -7,7 +10,7 @@
     
 #### API Key
     $api_key = 'xxx';
-Get the api key by looking at Authorization header in travian ajax requests for example in maps page
+Get the api key by looking at ```Authorization``` header in travian ajax requests for example in maps page
 
 #### Location
     $where = [42, -33];
