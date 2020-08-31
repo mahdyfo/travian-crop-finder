@@ -29,7 +29,7 @@ function check($x, $y, $use_proxy = false){
 	}
 	
 	$matches = [];
-	preg_match('/<td class=\\\"val\\\">'.$crop.'<\\\\\/td>\\\n\s+<td class=\\\"desc\\\">Getreidefarmen/', $result, $matches);
+	preg_match('/<td class=\\\"val\\\">'.$crop.'<\\\\\/td>\\\n\s+<td /', $result, $matches);
 
 	curl_close($c);
 	
