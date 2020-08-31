@@ -8,12 +8,13 @@
 #### Server
     $server = 'ts4.travian.de';
     
-#### API Key
-    $api_key = 'xxx';
-Get the api key by looking at ```Authorization``` header in travian ajax requests for example in maps page
+#### Login info
+    $username = 'xxx';
+    $password = 'xxx';
 
 #### Location
     $where = [42, -33];
+    //        x    y
 Location of your village
 
 #### Distance
