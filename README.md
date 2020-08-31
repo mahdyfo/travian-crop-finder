@@ -1,5 +1,7 @@
 # Travian Crop Finder
 
+This script first logs in with your account and gets all cookies and csrf values. Then it finds crops around you with the information specified in config.
+
 ## Run
     php crop_finder.php
 
