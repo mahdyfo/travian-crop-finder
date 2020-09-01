@@ -1,7 +1,7 @@
 <?php
 
 $server = 'ts4.travian.de';
-$username = 'mahdyfo';
+$username = 'xxx';
 $password = 'xxx';
 $where = [42, -33];
 $distance = 2;
