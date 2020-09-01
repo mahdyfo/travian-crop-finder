@@ -5,7 +5,7 @@ $username = 'xxx';
 $password = 'xxx';
 $where = [42, -33];
 $distance = 2;
-$crop = 9; // or 9
+$crop = 15; // or 9
 
 $use_proxy = true;
 $proxy_ip = '127.0.0.1';
