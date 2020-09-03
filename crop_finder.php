@@ -1,11 +1,11 @@
 <?php
 
 $server = 'ts4.travian.de';
-$username = 'xxx';
+$username = 'mahdyfo';
 $password = 'xxx';
 $where = [42, -33];
-$distance = 2;
-$crop = 15; // or 9
+$distance = 25;
+$crop = [15, 9]; // or 9
 
 $use_proxy = true;
 $proxy_ip = '127.0.0.1';
@@ -56,7 +56,12 @@ function auth($username, $password){
 	
 	curl_close($c);
 	
-	return extract_cookie($result);
+	echo "Logged in\n"; flush();
+	$cookies = extract_cookie($result);
+	
+	file_put_contents('cookies.txt', $cookies);
+	
+	return $cookies;
 }
 
 function extract_cookie($response){
@@ -80,10 +85,14 @@ function get_api_key($cookie){
 	
 	curl_close($c);
 	
+	echo "Got api key\n"; flush();
+	file_put_contents('api_key.txt', $api_key);
+	
 	return $api_key;
 }
 
-function check($cookie, $api_key, $crop, $x, $y){
+function check($crop, $x, $y){
+	global $cookie, $api_key, $username, $password;
 	$c = get_base_curl_handler('api/v1/ajax/viewTileDetails');
 	
 	curl_setopt($c, CURLOPT_POSTFIELDS, json_encode(['x'=>$x, 'y'=>$y]));
@@ -96,34 +105,49 @@ function check($cookie, $api_key, $crop, $x, $y){
 	}
 	
 	if(preg_match('/login\.php/', $result)){
-		die('bad api key');
+		echo "expired api key\n";
+		$cookie = auth($username, $password);
+		$api_key = get_api_key($cookie);
 	}
 	
 	$matches = [];
-	preg_match('/<td class=\\\"val\\\">'.$crop.'<\\\\\/td>\\\n\s+<td /', $result, $matches);
-
+	preg_match('/<i class=\\\"r4\\\"\s.*?<td class=\\\"val\\\">(?:'. implode('|', $crop) .')</', $result, $matches);
+	$matches = array_filter($matches);
+	
 	curl_close($c);
 	
-	return count($matches);
+	if(count($matches) > 0){
+		return true;
+	}else{
+		unset($matches);
+		return false;
+	}
 }
 
-$cookie = auth($username, $password);
-echo "Logged in\n"; flush();
+$cookie = @file_get_contents('cookies.txt');
 
-$api_key = get_api_key($cookie);
-echo "Got api key\n"; flush();
+$api_key = @file_get_contents('api_key.txt');
 
 $crops_found = 0;
+$i=1;
 for($x = $where[0] - $distance; $x < $where[0] + $distance; $x++)
 {
-	for($y = $where[1] - $distance; $y < $where[1] + $distance; $y++)
+	for($y = $where[1] + $distance; $y > $where[1] - $distance; $y--)
 	{
-		if(check($cookie, $api_key, $crop, $x, $y) > 0)
+		if(check($crop, $x, $y) > 0)
 		{
 			$crops_found++;
-			echo "Found : [".$x.",".$y."]\n";
+			echo " [".$x.",".$y."] ";
 			flush();
+		}else{
+			echo '.';
 		}
+		
+		if($i % (2 * $distance + 1) == 0){
+			echo "\n";flush();
+		}
+		
+		$i++;
 	}
 }
 
